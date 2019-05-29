@@ -1,7 +1,8 @@
 import { DataSource } from '@angular/cdk/collections';
 import { MatPaginator, MatSort } from '@angular/material';
-import { map } from 'rxjs/operators';
-import {Observable, of as observableOf, merge, BehaviorSubject, combineLatest} from 'rxjs';
+import { map, filter } from 'rxjs/operators';
+import { Observable, of as observableOf, merge, BehaviorSubject, combineLatest} from 'rxjs';
+
 
 /**
  * Data source for the NgxDataTable view. This class should
@@ -10,32 +11,13 @@ import {Observable, of as observableOf, merge, BehaviorSubject, combineLatest} f
  */
 export class NgxDataTableDataSource extends DataSource<any> {
   public data: any[];
-  _filterChange = new BehaviorSubject<string>('');
-  filteredData: any[];
-
-  get filter(): string {
-    return this._filterChange.value;
-  }
-  set filter(filter: string) {
-    this._filterChange.next(filter);
-  }
-
   constructor(
     private paginator: MatPaginator,
     private _data: any[],
-    private sort: MatSort
+    private sort: MatSort,
   ) {
     super();
-    this.data = _data;
-    // Master detail table
-    const rows = [];
-    _data.forEach(
-      element =>
-        element.details
-          ? rows.push(element, { detailRow: true, element })
-          : rows.push(element)
-    );
-    this.data = rows;
+    this.data = this._enrichData(_data);
   }
 
   /**
@@ -47,20 +29,37 @@ export class NgxDataTableDataSource extends DataSource<any> {
     // Combine everything that affects the rendered data into one update
     // stream for the data-table to consume.
     const dataMutations = [
-      observableOf(this.data),
-      this.paginator.page,
+       observableOf(this.data),
       this.sort.sortChange,
-      this._filterChange,
     ];
 
-    // Set the paginator length
-    this.paginator.length = this.data.length;
 
-    return merge(...dataMutations).pipe(
+    let merged = merge(...dataMutations);
+
+    // Set the paginator length
+    if ( this.paginator) {
+      this.paginator.length = this.data.length;
+      merged = merge(...dataMutations, this.paginator.page);
+    }
+
+
+    return merged.pipe(
       map(() => {
-        const filtered = this._filterData(this._data);
-        this.data = this._enrichData(filtered);
-        return this.getPagedData(this.getSortedData([...this.data]));
+        // let timeNow = new Date();
+        // let timeString = timeNow.getHours() + ':' + timeNow.getMinutes() + ':'
+        // + timeNow.getSeconds() + ' ' + timeNow.getMilliseconds();
+        // console.log('start pipe at ' + timeString );
+
+
+        const sorted = this.getSortedData([...this._data]);
+        const paged = this.getPagedData([...sorted]);
+
+        // const timeNow = new Date();
+        // const timeString = timeNow.getHours() + ':' + timeNow.getMinutes() + ':'
+        // + timeNow.getSeconds() + ' ' + timeNow.getMilliseconds();
+        // console.log('end pipe at ' + timeString ) ;
+
+        return this._enrichData(paged);
       })
     );
   }
@@ -70,25 +69,10 @@ export class NgxDataTableDataSource extends DataSource<any> {
     filtered.forEach(
       element =>
         element.details
-          ? rows.push(element, {detailRow: true, element})
+          ? rows.push(element, {detailRow: true, element} )
           : rows.push(element)
     );
     return rows;
-  }
-
-  private _filterData(data: any[]) {
-    this.filteredData =
-      !this.filter ? data : data.filter(obj => {
-      // Transform the data into a lowercase string of all property values.
-      const accumulator = (currentTerm, key) => currentTerm + obj[key];
-      const dataStr = Object.keys(obj).reduce(accumulator, '').toLowerCase();
-
-      // Transform the filter by converting it to lowercase and removing whitespace.
-      const transformedFilter = this.filter.trim().toLowerCase();
-
-      return dataStr.indexOf(transformedFilter) !== -1;
-    });
-    return this.filteredData;
   }
 
   /**
@@ -102,8 +86,11 @@ export class NgxDataTableDataSource extends DataSource<any> {
    * this would be replaced by requesting the appropriate data from the server.
    */
   private getPagedData(data: any[]) {
-    const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
-    return data.splice(startIndex, this.paginator.pageSize);
+    if (this.paginator != null) {
+      const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
+      return data.splice(startIndex, this.paginator.pageSize);
+    }
+    return data;
   }
 
   /**
@@ -111,6 +98,7 @@ export class NgxDataTableDataSource extends DataSource<any> {
    * this would be replaced by requesting the appropriate data from the server.
    */
   private getSortedData(data: any[]) {
+
     if (!this.sort.active || this.sort.direction === '') {
       return data;
     }

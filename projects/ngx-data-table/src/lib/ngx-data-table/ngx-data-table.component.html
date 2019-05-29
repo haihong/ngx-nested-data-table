@@ -1,41 +1,70 @@
 <div class="mat-elevation-z8">
-    <mat-form-field>
-      <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter" class="filter">
-    </mat-form-field>
-  <mat-table #table [dataSource]="dataSource" matSort aria-label="Elements">
-    <ng-container [matColumnDef]="cols" *ngFor="let cols of displayedColumns; let i = index">
-      <mat-header-cell *matHeaderCellDef mat-sort-header>{{cols}}</mat-header-cell>
-      <mat-cell *matCellDef="let element" [ngClass]="{'col-value': element.details === undefined}">
-        <!-- expand caret -->
-        <span *ngIf="i === 0 && element.details">
-          <span *ngIf="expandedElement && expandedElement[cols] === element[cols]; else plusIcon" class="expand-icon">&#9650;</span>
-          <ng-template #plusIcon><span class="expand-icon">&#9660;</span></ng-template>
-        </span>
-        <span>{{element[cols]}}</span>
-      </mat-cell>
-    </ng-container>
 
-    <!-- Expanded Content Column - The detail row is made up of this one column -->
-    <ng-container matColumnDef="expandedDetail">
-      <mat-cell *matCellDef="let detail">
-        <ngx-data-table [data]="detail.element.details" class="detail-table"></ngx-data-table>
-      </mat-cell>
-    </ng-container>
+ <mat-card *ngIf="isLoading && isMasterTable" 
+    style="display: flex; justify-content: center; align-items: center">
+   <mat-progress-spinner 
+     color="primary" 
+     mode="indeterminate">
+   </mat-progress-spinner>  
 
-    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: displayedColumns;"
-              [class.expanded]="expandedElement == row"
-              (click)="toggleRow(row)"></mat-row>
-    <mat-row *matRowDef="let row; columns: ['expandedDetail']; when: isExpansionDetailRow"
-    [@detailExpand]="row.element == expandedElement ? 'expanded' : 'collapsed'"
-    style="overflow: hidden"></mat-row>
-  </mat-table>
+ </mat-card>
 
-  <mat-paginator #paginator
+ 
+  <mat-form-field  [style.display] ="isLoading && isMasterTable ? 'none' : 'block'" *ngIf="showFilter">
+    <input matInput [value]="filterValue" [style.width]="'50%'" (change)="applyFilter($event.target.value)" placeholder="Filter" class="filter">
+    <mat-checkbox *ngIf="isDetailTable" [style.width]="'50%'"  [(ngModel)]="showHeader">Show Header</mat-checkbox>
+  </mat-form-field>
+  
+<mat-table #table  [dataSource]="dataSource" matSort aria-label="Elements">
 
-    [length]="dataSource?.data?.length"
-    [pageIndex]="0"
-    [pageSize]="25"
-    [pageSizeOptions]="[25, 50, 100, 250]">
-  </mat-paginator>
+  <ng-container [matColumnDef]="cols" *ngFor="let cols of displayedColumns; let i = index">
+    <mat-header-cell  *matHeaderCellDef mat-sort-header>{{getDisplayName(cols)}}</mat-header-cell>
+
+    <mat-cell *matCellDef="let element" [ngClass]="{'col-value': element.details === undefined}">
+     
+      <span *ngIf="i === 0 && element.details && element.details.length > 0">
+        <span *ngIf="isExpandedRowCol(cols,element[cols]); else plusIcon" class="expand-icon">&#9650;</span>
+        <ng-template #plusIcon><span class="expand-icon">&#9660;</span></ng-template>
+      </span>      
+
+      <span>{{element[cols]}}</span>
+    </mat-cell>
+
+    <mat-footer-cell *matFooterCellDef>{{getTotal(cols, i, dataSource.filteredData, isDetailTable)}}</mat-footer-cell>
+  </ng-container>
+ 
+  <ng-container matColumnDef="expandedDetail">
+    <mat-cell *matCellDef="let detail">
+      <ngx-data-table #detailTables [data]="detail.element.details" [ngClass]="getTableClass()"
+      [showFilter]="true" [globalFilter] ="filterValue"
+      [isMasterTable]="false"     
+      [getDisplayName] ="getDisplayName" [getTotal] = "getTotal" ></ngx-data-table>
+    </mat-cell>
+  </ng-container>
+
+  <mat-header-row [style.display]=" (isLoading && isMasterTable) || (isDetailTable && !showHeader) ? 'none' : 'flex'" *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
+
+  <mat-row [style.display] ="isLoading && isMasterTable ? 'none' : 'flex'"  *matRowDef="let row; columns: displayedColumns; "
+    [class.expanded]="isRowExpanded(row)"
+    (click)=" isDetailTable ? return : toggleRow(row)">
+    </mat-row>
+
+    <mat-row  *matRowDef="let row; columns: ['expandedDetail']; when: isExpansionDetailRow"
+    [@detailExpand]="isRowExpanded(row.element) ? 'expanded' : 'collapsed'"
+    style="overflow: hidden">
+    </mat-row>
+  
+  <mat-footer-row  [style.display] ="isLoading ? 'none' : 'flex'"  *matFooterRowDef="displayedColumns"></mat-footer-row>
+ 
+</mat-table>
+
+
+ 
+
+  <!-- <app-progress-spinner #progress [color]="color" [mode]="mode" [value]="value"
+  [backdropEnabled]="false" [positionGloballyCenter]="true"
+  [displayProgressSpinner]="displayProgressSpinner"></app-progress-spinner> -->
+
+ 
+ 
 </div>

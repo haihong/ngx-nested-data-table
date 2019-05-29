@@ -1,0 +1,17 @@
+.detail-table ,.middle-table {display: flex;flex-direction: column;display: block;margin: 10px;width: 100%; }
+.detail-table mat-header-row {display:flex; background-color: white;}
+.detail-table mat-table {background-color: lightblue !important; }
+.detail-table mat-cell:first-of-type {padding-left:5px;}
+.middle-table mat-header-row {display:flex; background-color: white;}
+.middle-table mat-table {background-color: lightgoldenrodyellow;}
+.mat-column-expandedDetail {padding-left:0px; padding-right:0px;} 
+.expand-icon {color: rgba(0,0,0,.44);font-size: 12px; margin-right: 5px; cursor: pointer;}
+.col-value:first-child span{margin-left: 15px;}
+.mat-form-field {padding: 10px 10px 0 10px;width: calc(100% - 20px); background-color: white;}
+.mat-footer-cell:first-of-type {padding-left: 10px; font-weight: bold;}
+.mat-footer-row {background-color: white}
+.mat-header-row {min-width: 40px;}
+.mat-header-cell {font-weight: bold;}
+.mat-cell:first-of-type, 
+.mat-header-cell:first-of-type, 
+.mat-footer-cell:first-of-type {min-width: 150px;}
