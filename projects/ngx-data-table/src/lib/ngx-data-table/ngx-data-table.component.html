@@ -30,7 +30,7 @@
       <span>{{element[cols]}}</span>
     </mat-cell>
 
-    <mat-footer-cell *matFooterCellDef>{{getTotal(cols, i, dataSource.filteredData, isDetailTable)}}</mat-footer-cell>
+    <mat-footer-cell *matFooterCellDef>{{getTotal(cols, i, dataSource.rawData, isDetailTable)}}</mat-footer-cell>
   </ng-container>
  
   <ng-container matColumnDef="expandedDetail">
@@ -42,7 +42,7 @@
     </mat-cell>
   </ng-container>
 
-  <mat-header-row [style.display]=" (isLoading && isMasterTable) || (isDetailTable && !showHeader) ? 'none' : 'flex'" *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
+  <mat-header-row [style.display]=" (isLoading && isMasterTable) || isParentOfDetailTable || (isDetailTable && !showHeader) ? 'none' : 'flex'" *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
 
   <mat-row [style.display] ="isLoading && isMasterTable ? 'none' : 'flex'"  *matRowDef="let row; columns: displayedColumns; "
     [class.expanded]="isRowExpanded(row)"
@@ -54,7 +54,7 @@
     style="overflow: hidden">
     </mat-row>
   
-  <mat-footer-row  [style.display] ="isLoading ? 'none' : 'flex'"  *matFooterRowDef="displayedColumns"></mat-footer-row>
+  <mat-footer-row  [style.display] ="isLoading && isMasterTable ? 'none' : 'flex'"  *matFooterRowDef="displayedColumns"></mat-footer-row>
  
 </mat-table>
 

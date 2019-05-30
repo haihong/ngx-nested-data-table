@@ -3,8 +3,9 @@ import { Component, OnInit, ViewChild, Input, ViewChildren,
 import { MatPaginator, MatSort } from '@angular/material';
 import { NgxDataTableDataSource } from './ngx-data-table-datasource';
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import { repeatWhen } from 'rxjs/operators';
 import { timer} from 'rxjs';
+import * as _ from 'lodash';
+
 
 @Component({
   selector: 'ngx-data-table',
@@ -46,7 +47,7 @@ export class NgxDataTableComponent implements OnInit, AfterViewInit {
       if ( this.rawData == null || this.rawData.length === 0  ) {
         this.rawData =  _data;
       }
-      const source = timer(100);
+      const source = timer(1);
       source.subscribe( val => {
         this.dataSource = new NgxDataTableDataSource(
           this.paginator ,
@@ -119,6 +120,8 @@ export class NgxDataTableComponent implements OnInit, AfterViewInit {
     if ( this.isMasterTable && this.isLoading  ) {
       this.stopLoadingSpin(this.rawData);
     }
+
+ 
   }
 
   isExpansionDetailRow = (i: number, row: Object) =>
@@ -179,21 +182,21 @@ export class NgxDataTableComponent implements OnInit, AfterViewInit {
     }
   }
 
-  private _filterDataWithDetails(data: any[], filterValue: string ) {
+  private _filterDataDeep(data: any[], filterValue: string, detailName = 'details' ) {
 
     if ( ! filterValue ) {
       return data;
     }
 
-    const isDetail = data[0].details === undefined;
+    const isDetail = data[0][detailName] === undefined;
 
     if ( isDetail ) {
       return this._filterData(data, filterValue);
     }
 
-    data = data.filter(obj => this._hasFilterData(obj.details, filterValue) ) ;
+    data = data.filter(obj => this._hasFilterDataDeep(obj[detailName], filterValue) ) ;
     data.forEach( child => {
-      child.details = this._filterDataWithDetails([...child.details], filterValue);
+      child.details = this._filterDataDeep([...child[detailName]], filterValue);
     } );
     return data;
 
@@ -202,98 +205,39 @@ export class NgxDataTableComponent implements OnInit, AfterViewInit {
 
   private _filterData(data: any[] , filterValue: string) {
 
-    return !filterValue ? data : data.filter(obj => {
+    const filterd = !filterValue ? data : data.filter(obj => {
 
-      const accumulator = (currentTerm, key) => currentTerm + obj[key];
-      const dataStr = Object.keys(obj).reduce(accumulator, '').toLowerCase();
-      const transformedFilter = filterValue.trim().toLowerCase();
-      return dataStr.indexOf(transformedFilter) !== -1;
+      return this._hasValueInValue(obj, filterValue);
     });
+
+    return filterd;
   }
 
-  private _getTableTotalRowCount(data: any[] ) {
-     if ( ! data || data.length === 0 ) {
-       return 0;
-     }
 
-     if ( data[0].details === undefined ) {
-        return data.length;
-      }
+  private _hasValueInValue(obj: any, filterValue: string ) {
+    const filted = _.filter(obj, function(value, key) {
+      return value && value.toString().toLowerCase().indexOf(filterValue.toLocaleLowerCase()) >= 0;
+    });
+    return filted.length > 0 ;
 
-      let count = 0;
-      data.forEach( child => {
-        count = count + 1;
-        if (child.details && child.details.length > 0 ) {
-          count = count + this._getTableTotalRowCount(child.details );
-        }
 
-      });
-      return count;
   }
 
-   deepCopy(obj) {
-    let copy: any;
 
-    // Handle the 3 simple types, and null or undefined
-    if (null == obj || 'object' != typeof obj) { return obj; }
+  private _hasFilterDataDeep(data: any[], filterValue: string ,  detailName = 'details') {
 
-    // Handle Date
-    if (obj instanceof Date) {
-        copy = new Date();
-        copy.setTime(obj.getTime());
-        return copy;
-    }
-
-    // Handle Array
-    if (obj instanceof Array) {
-        copy = [];
-        for (let i = 0, len = obj.length; i < len; i++) {
-            copy[i] = this.deepCopy(obj[i]);
-        }
-        return copy;
-    }
-
-    // Handle Object
-    if (obj instanceof Object) {
-        copy = {};
-        for (const attr in obj) {
-            if (obj.hasOwnProperty(attr)) {
-              copy[attr] = this.deepCopy(obj[attr]);
-            }
-        }
-        return copy;
-    }
-
-    throw new Error('Unable to copy obj! Its type isnot supported.');
-}
-
-  private _hasFilterData(data: any[], filterValue: string) {
-
-    let hasData = false;
-
-    for ( let i = 0 ; i < data.length ; i++ ) {
-
-      if ( data[i].details !== undefined ) {
-        if ( this._hasFilterData(data[i].details, filterValue) ) {
-          hasData = true;
-          break;
-        }
-      }
-      const accumulator = (currentTerm, key) => currentTerm + data[i][key];
-      const dataStr = Object.keys(data[i]).reduce(accumulator, '').toLowerCase();
-
-      const transformedFilter = filterValue.trim().toLowerCase();
-
-      if ( dataStr.indexOf(transformedFilter) !== -1) {
-        hasData = true;
-        break;
+    const allDetailData = _.flatMapDeep(data, item => [item, ...item[detailName]] );
+    for ( let i = 0 ; i < allDetailData.length; i++ ) {
+      if ( this._hasValueInValue(allDetailData[i], filterValue )) {
+        return true;
       }
     }
-    return hasData;
+
+    return false;
   }
 
   private calculateSpinningWaitingTime( data: any[] ) {
-    const allRowCounts = this._getTableTotalRowCount(data);
+    const allRowCounts = _.flatMapDeep(data, item => [item, ...item.details] ).length;
     return allRowCounts * this.rowLoadMillSecond - 1000;
   }
 
@@ -309,8 +253,8 @@ export class NgxDataTableComponent implements OnInit, AfterViewInit {
   applyFilter(filterValue: string) {
 
     this.filterValue = filterValue;
-    const clone = this.deepCopy(this.rawData);
-    const newData = this._filterDataWithDetails(clone, filterValue ) ;
+    const clone = _.cloneDeep(this.rawData);
+    const newData = this._filterDataDeep(clone, filterValue ) ;
 
     this.data = newData;
     this.stopLoadingSpin(newData);

@@ -218,31 +218,31 @@ export class AppComponent {
 
   getDisplayName(columnName: string): string {
 
-    return columnName;
+    // return columnName;
 
-    // if ( columnName == null || columnName === '') {
-    //   return columnName;
-    // }
+    if ( columnName == null || columnName === '') {
+      return columnName;
+    }
 
-    // if ( columnName.indexOf('Count') > 0 ) {
-    //   return '#';
-    // } else {
-    //   const re = /([A-Za-z]?)([a-z]+)/g, output = [];
-    //   let match;
+    if ( columnName.indexOf('Count') > 0 ) {
+      return '#';
+    } else {
+      const re = /([A-Za-z]?)([a-z]+)/g, output = [];
+      let match;
 
-    // match = re.exec(columnName);
-    // while (match) {
-    //   output.push([match[1].toUpperCase(), match[2]].join(''));
-    //   match = re.exec(columnName);
-    // }
+    match = re.exec(columnName);
+    while (match) {
+      output.push([match[1].toUpperCase(), match[2]].join(''));
+      match = re.exec(columnName);
+    }
 
-    // if ( output[ output.length - 1 ].toLowerCase() === 'amount') {
-    //   output[ output.length - 1 ] = '$';
-    // }
+    if ( output[ output.length - 1 ].toLowerCase() === 'amount') {
+      output[ output.length - 1 ] = '$';
+    }
 
-    // return output.join(' ');
+    return output.join(' ');
 
-    // }
+    }
 
   }
 }

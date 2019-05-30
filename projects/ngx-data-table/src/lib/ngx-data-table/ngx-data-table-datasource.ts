@@ -11,6 +11,7 @@ import { Observable, of as observableOf, merge, BehaviorSubject, combineLatest} 
  */
 export class NgxDataTableDataSource extends DataSource<any> {
   public data: any[];
+  public rawData: any[];
   constructor(
     private paginator: MatPaginator,
     private _data: any[],
@@ -18,6 +19,7 @@ export class NgxDataTableDataSource extends DataSource<any> {
   ) {
     super();
     this.data = this._enrichData(_data);
+    this.rawData = _data;
   }
 
   /**
