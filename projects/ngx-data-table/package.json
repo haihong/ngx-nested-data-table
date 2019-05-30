@@ -23,5 +23,11 @@
     "material"
   ],
   "author": "Daniele Zurico <daniele.zurico@gmail.com> (http://www.dzurico.com)",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "lodash": "^4.17.11"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.121"
+  }
 }
