@@ -1,50 +1,83 @@
 <div class="mat-elevation-z8">
 
- <mat-card *ngIf="isLoading && isMasterTable" 
+ <mat-card *ngIf="isLoading && isMasterTable"
     style="display: flex; justify-content: center; align-items: center">
-   <mat-progress-spinner 
-     color="primary" 
+   <mat-progress-spinner
+     color="primary"
      mode="indeterminate">
-   </mat-progress-spinner>  
+   </mat-progress-spinner>
 
  </mat-card>
 
- 
+
   <mat-form-field  [style.display] ="isLoading && isMasterTable ? 'none' : 'block'" *ngIf="showFilter">
     <input matInput [value]="filterValue" [style.width]="'50%'" (change)="applyFilter($event.target.value)" placeholder="Filter" class="filter">
     <mat-checkbox *ngIf="isDetailTable" [style.width]="'50%'"  [(ngModel)]="showHeader">Show Header</mat-checkbox>
   </mat-form-field>
-  
+
 <mat-table #table  [dataSource]="dataSource" matSort aria-label="Elements">
 
   <ng-container [matColumnDef]="cols" *ngFor="let cols of displayedColumns; let i = index">
     <mat-header-cell  *matHeaderCellDef mat-sort-header>{{getDisplayName(cols)}}</mat-header-cell>
 
     <mat-cell *matCellDef="let element" [ngClass]="{'col-value': element.details === undefined}">
-     
+
       <span *ngIf="i === 0 && element.details && element.details.length > 0">
         <span *ngIf="isExpandedRowCol(cols,element[cols]); else plusIcon" class="expand-icon">&#9650;</span>
         <ng-template #plusIcon><span class="expand-icon">&#9660;</span></ng-template>
-      </span>      
+      </span>
 
       <span>{{element[cols]}}</span>
     </mat-cell>
 
     <mat-footer-cell *matFooterCellDef>{{getTotal(cols, i, dataSource.rawData, isDetailTable)}}</mat-footer-cell>
   </ng-container>
- 
+
+  <ng-container [matColumnDef]="groupNames" *ngFor="let groupNames of groupColumns; let group of columnGroup let i = index">
+    <mat-header-cell *matHeaderCellDef [style.text-align]="center" [attr.colspan]="group.colspan">{{groupNames}}</mat-header-cell>
+  </ng-container>
+
+  <!-- <ng-container [matColumnDef] ="'Name'" >
+    <mat-header-cell *matHeaderCellDef [style.text-align]="center" [attr.colspan]="1">group 1 </mat-header-cell>
+  </ng-container>
+
+  <ng-container [matColumnDef] ="'ApplicationProcessed'" >
+    <mat-header-cell *matHeaderCellDef [style.text-align]="center" [attr.colspan]="4">group 2 </mat-header-cell>
+  </ng-container>
+
+  <ng-container [matColumnDef] ="'IndicativeSent'" >
+    <mat-header-cell *matHeaderCellDef [style.text-align]="center" [attr.colspan]="4">group 3 </mat-header-cell>
+  </ng-container>
+
+  <ng-container [matColumnDef] ="'RecommendedPending'" >
+    <mat-header-cell *matHeaderCellDef [style.text-align]="center" [attr.colspan]="4">group 4 </mat-header-cell>
+  </ng-container>
+
+  <ng-container [matColumnDef] ="'ApprovalPending'" >
+    <mat-header-cell *matHeaderCellDef [style.text-align]="center" [attr.colspan]="4">group 5 </mat-header-cell>
+  </ng-container> -->
+
   <ng-container matColumnDef="expandedDetail">
     <mat-cell *matCellDef="let detail">
-      <ngx-data-table #detailTables [data]="detail.element.details" [ngClass]="getTableClass()"
+      <ngx-data-table #detailTables [data]="detail.element.details" [columnGroup]="[]" [ngClass]="getTableClass()"
       [showFilter]="true" [globalFilter] ="filterValue"
-      [isMasterTable]="false"     
+      [isMasterTable]="false"
       [getDisplayName] ="getDisplayName" [getTotal] = "getTotal" ></ngx-data-table>
     </mat-cell>
   </ng-container>
 
-  <mat-header-row [style.display]=" (isLoading && isMasterTable) || isParentOfDetailTable || (isDetailTable && !showHeader) ? 'none' : 'flex'" *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
+  <ng-container *ngIf="groupColumns.length > 0">
+    <mat-header-row [style.display]=" hideHeader() ? 'none' : 'flex'" *matHeaderRowDef="groupColumns; sticky: true"></mat-header-row>
+  </ng-container>
+  
+  <!-- <mat-header-row [style.display]=" hideHeader() ? 'none' : 'flex'"
+  *matHeaderRowDef="['Name','ApplicationProcessed','IndicativeSent','RecommendedPending','ApprovalPending']"></mat-header-row> -->
 
-  <mat-row [style.display] ="isLoading && isMasterTable ? 'none' : 'flex'"  *matRowDef="let row; columns: displayedColumns; "
+
+  <mat-header-row [style.display]=" hideHeader() ? 'none' : 'flex'"
+      *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
+
+   <mat-row [style.display] ="isLoading && isMasterTable ? 'none' : 'flex'"  *matRowDef="let row; columns: displayedColumns; "
     [class.expanded]="isRowExpanded(row)"
     (click)=" isDetailTable ? return : toggleRow(row)">
     </mat-row>
@@ -53,18 +86,8 @@
     [@detailExpand]="isRowExpanded(row.element) ? 'expanded' : 'collapsed'"
     style="overflow: hidden">
     </mat-row>
-  
+
   <mat-footer-row  [style.display] ="isLoading && isMasterTable ? 'none' : 'flex'"  *matFooterRowDef="displayedColumns"></mat-footer-row>
- 
+
 </mat-table>
-
-
- 
-
-  <!-- <app-progress-spinner #progress [color]="color" [mode]="mode" [value]="value"
-  [backdropEnabled]="false" [positionGloballyCenter]="true"
-  [displayProgressSpinner]="displayProgressSpinner"></app-progress-spinner> -->
-
- 
- 
 </div>

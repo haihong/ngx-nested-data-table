@@ -3,6 +3,7 @@ import { Component, OnInit, ViewChild, Input, ViewChildren,
 import { MatPaginator, MatSort } from '@angular/material';
 import { NgxDataTableDataSource } from './ngx-data-table-datasource';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { DataTableColumnGroup} from './ngx-data-table-column-group';
 import { timer} from 'rxjs';
 import * as _ from 'lodash';
 
@@ -47,7 +48,7 @@ export class NgxDataTableComponent implements OnInit, AfterViewInit {
       if ( this.rawData == null || this.rawData.length === 0  ) {
         this.rawData =  _data;
       }
-      const source = timer(1);
+      const source = timer(10);
       source.subscribe( val => {
         this.dataSource = new NgxDataTableDataSource(
           this.paginator ,
@@ -79,6 +80,17 @@ export class NgxDataTableComponent implements OnInit, AfterViewInit {
 
 
   }
+  @Input() set columnGroup (_columnGroup: DataTableColumnGroup[]) {
+    this.groupColumns = _.map( _columnGroup, (obj) => {
+      return obj.groupName.toString() ;
+    } );
+
+    if ( !this.isDetailTable ) {
+      console.log(this.groupColumns);
+      console.log(_columnGroup);
+    }
+
+  }
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   @ViewChildren(NgxDataTableComponent) detailTables: QueryList<NgxDataTableComponent>;
@@ -93,6 +105,7 @@ export class NgxDataTableComponent implements OnInit, AfterViewInit {
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
   displayedColumns: Array<string>;
   expandedElement: Array<string>;
+  groupColumns: Array<string>;
 
   expandedRows: Array<Array<string>>;
   expandedRowIndexs: Array<number>;
@@ -124,6 +137,10 @@ export class NgxDataTableComponent implements OnInit, AfterViewInit {
  
   }
 
+  getGroupName(group: DataTableColumnGroup) {
+    return group.groupName;
+  }
+
   isExpansionDetailRow = (i: number, row: Object) =>
     row.hasOwnProperty('detailRow')
 
@@ -139,6 +156,12 @@ export class NgxDataTableComponent implements OnInit, AfterViewInit {
     } else {
       return 'middle-table';
     }
+  }
+
+  hideHeader() {
+    return (this.isLoading && this.isMasterTable)
+          || (!this.isMasterTable && this.isParentOfDetailTable)
+          || (this.isDetailTable && !this.showHeader);
   }
 
   isRowExpanded( row: Array<string>) {
