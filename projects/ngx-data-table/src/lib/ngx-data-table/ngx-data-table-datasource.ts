@@ -56,10 +56,10 @@ export class NgxDataTableDataSource extends DataSource<any> {
         const sorted = this.getSortedData([...this._data]);
         const paged = this.getPagedData([...sorted]);
 
-        // const timeNow = new Date();
-        // const timeString = timeNow.getHours() + ':' + timeNow.getMinutes() + ':'
-        // + timeNow.getSeconds() + ' ' + timeNow.getMilliseconds();
-        // console.log('end pipe at ' + timeString ) ;
+        const timeNow = new Date();
+        const timeString = timeNow.getHours() + ':' + timeNow.getMinutes() + ':'
+        + timeNow.getSeconds() + ' ' + timeNow.getMilliseconds();
+        console.log('end pipe at ' + timeString ) ;
 
         return this._enrichData(paged);
       })

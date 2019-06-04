@@ -25,7 +25,7 @@ export class AppComponent {
   team: string[] = ['ACT', 'NSW', 'NT', 'QLD', 'SA', 'TAS', 'VIC', 'WA'];
   appStatus: string[] = ['App Received', 'App Processed', 'Indicative Sent',
                       'Val Requested', 'Val Received', 'Credit Approved', 'Offer Prepared',
-                      'Settled', 'Cancelled'];
+                      'Cancelled'];
   tabelType: TableTypeEnum;
   columnGroup: DataTableColumnGroup[];
 
@@ -101,7 +101,24 @@ export class AppComponent {
   }
 
   getDisplayNameSla(columnName: string) {
+    if ( columnName.toLowerCase().indexOf('one') > 0 ) {
+      return '<2';
+    }
+
+    if ( columnName.toLowerCase().indexOf('two') > 0 ) {
+      return '3';
+    }
+
+    if ( columnName.toLowerCase().indexOf('three') > 0 ) {
+      return '4';
+    }
+
+    if ( columnName.toLowerCase().indexOf('four') > 0 ) {
+      return '5+';
+    }
+
     return columnName;
+
   }
 
   getDisplayName(columnName: string): string {
@@ -114,7 +131,75 @@ export class AppComponent {
       return this.getDisplayNameSla(columnName);
     }
 
+    if ( columnName.toLowerCase().indexOf('one') > 0 ) {
+      return '<2';
+    }
+
+    if ( columnName.toLowerCase().indexOf('two') > 0 ) {
+      return '3';
+    }
+
+    if ( columnName.toLowerCase().indexOf('three') > 0 ) {
+      return '4';
+    }
+
+    if ( columnName.toLowerCase().indexOf('four') > 0 ) {
+      return '5+';
+    }
+
      return columnName;
+
+  }
+
+  getColumnStyleSla(columnName: string): object {
+
+    if ( columnName.toLowerCase().indexOf('one') > 0 ) {
+      return { 'background-color': 'yellow' };
+    }
+
+    if ( columnName.toLowerCase().indexOf('two') > 0 ) {
+      return { 'background-color': 'orange' };
+    }
+
+    if ( columnName.toLowerCase().indexOf('three') > 0 ) {
+      return { 'background-color': 'orange' };
+    }
+
+    if ( columnName.toLowerCase().indexOf('four') > 0 ) {
+      return { 'background-color': 'red' };
+    }
+
+    return {'background-color': 'white'};
+  }
+
+  getColumnStyle(columnName: string) {
+    if ( this.tabelType === TableTypeEnum.originationPipeline || this.tabelType === TableTypeEnum.activityTracker ) {
+      return {'background-color': 'white'};
+    }
+
+    if ( ! columnName ) {
+      return {'background-color': 'white'};
+    }
+
+    if ( columnName.toLowerCase().indexOf('one') > 0 ) {
+      return { 'background-color': 'yellow' };
+    }
+
+
+
+    if ( columnName.toLowerCase().indexOf('two') > 0 ) {
+      return { 'background-color': 'orange' };
+    }
+
+    if ( columnName.toLowerCase().indexOf('three') > 0 ) {
+      return { 'background-color': 'orange' };
+    }
+
+    if ( columnName.toLowerCase().indexOf('four') > 0 ) {
+      return { 'background-color': 'red' };
+    }
+
+    return {'background-color': 'white'};
 
   }
 
@@ -138,18 +223,18 @@ export class AppComponent {
         'Dec 18 #': faker.random.number() % 20,
         'Nov 18 $': faker.random.number(),
         'Nov 18 #': faker.random.number() % 20,
-        'Oct 18 $': faker.random.number(),
-        'Oct 18 #': faker.random.number() % 20,
-        'Sep 18 $': faker.random.number(),
-        'Sep 18 #': faker.random.number() % 20,
-        'Aug 18 $': faker.random.number(),
-        'Aug 18 #': faker.random.number() % 20,
-        'Jul 18 $': faker.random.number(),
-        'Jul 18 #': faker.random.number() % 20,
-        'Jun 18 $': faker.random.number(),
-        'Jun 18 #': faker.random.number() % 20,
-        'May 18 $': faker.random.number(),
-        'May 18 #': faker.random.number() % 20,
+        // 'Oct 18 $': faker.random.number(),
+        // 'Oct 18 #': faker.random.number() % 20,
+        // 'Sep 18 $': faker.random.number(),
+        // 'Sep 18 #': faker.random.number() % 20,
+        // 'Aug 18 $': faker.random.number(),
+        // 'Aug 18 #': faker.random.number() % 20,
+        // 'Jul 18 $': faker.random.number(),
+        // 'Jul 18 #': faker.random.number() % 20,
+        // 'Jun 18 $': faker.random.number(),
+        // 'Jun 18 #': faker.random.number() % 20,
+        // 'May 18 $': faker.random.number(),
+        // 'May 18 #': faker.random.number() % 20,
         details: [],
       };
 
@@ -169,25 +254,22 @@ export class AppComponent {
         'Dec 18 #': faker.random.number() % 10,
         'Nov 18 $': faker.random.number(),
         'Nov 18 #': faker.random.number() % 10,
-        'Oct 18 $': faker.random.number(),
-        'Oct 18 #': faker.random.number() % 10,
-        'Sep 18 $': faker.random.number(),
-        'Sep 18 #': faker.random.number() % 10,
-        'Aug 18 $': faker.random.number(),
-        'Aug 18 #': faker.random.number() % 10,
-        'Jul 18 $': faker.random.number(),
-        'Jul 18 #': faker.random.number() % 10,
-        'Jun 18 $': faker.random.number(),
-        'Jun 18 #': faker.random.number() % 10,
-        'May 18 $': faker.random.number(),
-        'May 18 #': faker.random.number() % 10,
+        // 'Oct 18 $': faker.random.number(),
+        // 'Oct 18 #': faker.random.number() % 10,
+        // 'Sep 18 $': faker.random.number(),
+        // 'Sep 18 #': faker.random.number() % 10,
+        // 'Aug 18 $': faker.random.number(),
+        // 'Aug 18 #': faker.random.number() % 10,
+        // 'Jul 18 $': faker.random.number(),
+        // 'Jul 18 #': faker.random.number() % 10,
+        // 'Jun 18 $': faker.random.number(),
+        // 'Jun 18 #': faker.random.number() % 10,
+        // 'May 18 $': faker.random.number(),
+        // 'May 18 #': faker.random.number() % 10,
         details: [],
         };
 
-        let randomSize = faker.random.number() % 20;
-        if ( randomSize <= 2) {
-          randomSize = 2;
-        }
+        const randomSize = 10 + faker.random.number() % 10;
 
         for ( let u = 0 ; u < randomSize; u++ ) {
           const activityUser: ActivityTrackerUser = {
@@ -204,18 +286,18 @@ export class AppComponent {
             'Dec 18 #': faker.random.number() % 10,
             'Nov 18 $': faker.random.number(),
             'Nov 18 #': faker.random.number() % 10,
-            'Oct 18 $': faker.random.number(),
-            'Oct 18 #': faker.random.number() % 10,
-            'Sep 18 $': faker.random.number(),
-            'Sep 18 #': faker.random.number() % 10,
-            'Aug 18 $': faker.random.number(),
-            'Aug 18 #': faker.random.number() % 10,
-            'Jul 18 $': faker.random.number(),
-            'Jul 18 #': faker.random.number() % 10,
-            'Jun 18 $': faker.random.number(),
-            'Jun 18 #': faker.random.number() % 10,
-            'May 18 $': faker.random.number(),
-            'May 18 #': faker.random.number() % 10,
+            // 'Oct 18 $': faker.random.number(),
+            // 'Oct 18 #': faker.random.number() % 10,
+            // 'Sep 18 $': faker.random.number(),
+            // 'Sep 18 #': faker.random.number() % 10,
+            // 'Aug 18 $': faker.random.number(),
+            // 'Aug 18 #': faker.random.number() % 10,
+            // 'Jul 18 $': faker.random.number(),
+            // 'Jul 18 #': faker.random.number() % 10,
+            // 'Jun 18 $': faker.random.number(),
+            // 'Jun 18 #': faker.random.number() % 10,
+            // 'May 18 $': faker.random.number(),
+            // 'May 18 #': faker.random.number() % 10,
           };
           activityGroup.details.push(activityUser);
         }
@@ -353,11 +435,11 @@ export class AppComponent {
 
     this.columnGroup = [];
 
-     this.columnGroup.push( new DataTableColumnGroup('Name', 1));
-    this.columnGroup.push( new DataTableColumnGroup('ApplicationProcessed', 4));
-    this.columnGroup.push( new DataTableColumnGroup('IndicativeSent', 4));
-    this.columnGroup.push( new DataTableColumnGroup('RecommendedPending', 4));
-    this.columnGroup.push( new DataTableColumnGroup('ApprovalPending', 4));
+    this.columnGroup.push( new DataTableColumnGroup('Name', 1, 'black', 'lightblue'));
+    this.columnGroup.push( new DataTableColumnGroup('ApplicationProcessed', 4, 'white', 'green'));
+    this.columnGroup.push( new DataTableColumnGroup('IndicativeSent', 4, 'black', 'yellow'));
+    this.columnGroup.push( new DataTableColumnGroup('RecommendedPending', 4, 'white', 'green'));
+    this.columnGroup.push( new DataTableColumnGroup('ApprovalPending', 4, 'black', 'yellow'));
 
   }
 }

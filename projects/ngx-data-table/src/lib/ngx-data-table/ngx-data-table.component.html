@@ -18,7 +18,7 @@
 <mat-table #table  [dataSource]="dataSource" matSort aria-label="Elements">
 
   <ng-container [matColumnDef]="cols" *ngFor="let cols of displayedColumns; let i = index">
-    <mat-header-cell  *matHeaderCellDef mat-sort-header>{{getDisplayName(cols)}}</mat-header-cell>
+    <mat-header-cell [ngStyle] ="getColumnStyle(cols)"  *matHeaderCellDef mat-sort-header>{{getDisplayName(cols)}}</mat-header-cell>
 
     <mat-cell *matCellDef="let element" [ngClass]="{'col-value': element.details === undefined}">
 
@@ -33,28 +33,28 @@
     <mat-footer-cell *matFooterCellDef>{{getTotal(cols, i, dataSource.rawData, isDetailTable)}}</mat-footer-cell>
   </ng-container>
 
-  <ng-container [matColumnDef]="groupNames" *ngFor="let groupNames of groupColumns; let group of columnGroup let i = index">
-    <mat-header-cell *matHeaderCellDef [style.text-align]="center" [attr.colspan]="group.colspan">{{groupNames}}</mat-header-cell>
+  <ng-container [matColumnDef]="groupNames" *ngFor="let groupNames of groupColumns; let i = index">
+    <mat-header-cell *matHeaderCellDef class="group-column" [ngStyle] = "getGroupStyle(groupNames)">{{groupNames}}</mat-header-cell>
   </ng-container>
 
   <!-- <ng-container [matColumnDef] ="'Name'" >
-    <mat-header-cell *matHeaderCellDef [style.text-align]="center" [attr.colspan]="1">group 1 </mat-header-cell>
+    <mat-header-cell *matHeaderCellDef [style.text-align]="center" [ngStyle] = "{'flex': getGroupStyle('Name')}">group 1 </mat-header-cell>
   </ng-container>
 
   <ng-container [matColumnDef] ="'ApplicationProcessed'" >
-    <mat-header-cell *matHeaderCellDef [style.text-align]="center" [attr.colspan]="4">group 2 </mat-header-cell>
+    <mat-header-cell *matHeaderCellDef [style.text-align]="center" [ngStyle] = "{'flex': getGroupStyle('ApplicationProcessed')}">group 2 </mat-header-cell>
   </ng-container>
 
   <ng-container [matColumnDef] ="'IndicativeSent'" >
-    <mat-header-cell *matHeaderCellDef [style.text-align]="center" [attr.colspan]="4">group 3 </mat-header-cell>
+    <mat-header-cell *matHeaderCellDef [style.text-align]="center" style="flex:4">group 3 </mat-header-cell>
   </ng-container>
 
   <ng-container [matColumnDef] ="'RecommendedPending'" >
-    <mat-header-cell *matHeaderCellDef [style.text-align]="center" [attr.colspan]="4">group 4 </mat-header-cell>
+    <mat-header-cell *matHeaderCellDef [style.text-align]="center" style="flex:4">group 4 </mat-header-cell>
   </ng-container>
 
   <ng-container [matColumnDef] ="'ApprovalPending'" >
-    <mat-header-cell *matHeaderCellDef [style.text-align]="center" [attr.colspan]="4">group 5 </mat-header-cell>
+    <mat-header-cell *matHeaderCellDef [style.text-align]="center" style="flex:4">group 5 </mat-header-cell>
   </ng-container> -->
 
   <ng-container matColumnDef="expandedDetail">
@@ -62,12 +62,12 @@
       <ngx-data-table #detailTables [data]="detail.element.details" [columnGroup]="[]" [ngClass]="getTableClass()"
       [showFilter]="true" [globalFilter] ="filterValue"
       [isMasterTable]="false"
-      [getDisplayName] ="getDisplayName" [getTotal] = "getTotal" ></ngx-data-table>
+      [getDisplayName] ="getDisplayName" [getTotal] = "getTotal" [getColumnStyle] ="getColumnStyle" ></ngx-data-table>
     </mat-cell>
   </ng-container>
 
-  <ng-container *ngIf="groupColumns.length > 0">
-    <mat-header-row [style.display]=" hideHeader() ? 'none' : 'flex'" *matHeaderRowDef="groupColumns; sticky: true"></mat-header-row>
+  <ng-container *ngIf=" groupColumns && groupColumns.length > 0">
+    <mat-header-row class="group-row" [style.display]=" hideHeader() ? 'none' : 'flex'" *matHeaderRowDef="groupColumns; sticky: true"></mat-header-row>
   </ng-container>
   
   <!-- <mat-header-row [style.display]=" hideHeader() ? 'none' : 'flex'"

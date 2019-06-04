@@ -13,18 +13,18 @@ export class ActivityTrackerUser {
     'Dec 18 #': number;
     'Nov 18 $': number;
     'Nov 18 #': number;
-    'Oct 18 $': number;
-    'Oct 18 #': number;
-    'Sep 18 $': number;
-    'Sep 18 #': number;
-    'Aug 18 $': number;
-    'Aug 18 #': number;
-    'Jul 18 $': number;
-    'Jul 18 #': number;
-    'Jun 18 $': number;
-    'Jun 18 #': number;
-    'May 18 $': number;
-    'May 18 #': number;
+    // 'Oct 18 $': number;
+    // 'Oct 18 #': number;
+    // 'Sep 18 $': number;
+    // 'Sep 18 #': number;
+    // 'Aug 18 $': number;
+    // 'Aug 18 #': number;
+    // 'Jul 18 $': number;
+    // 'Jul 18 #': number;
+    // 'Jun 18 $': number;
+    // 'Jun 18 #': number;
+    // 'May 18 $': number;
+    // 'May 18 #': number;
 }
 
 
@@ -42,18 +42,18 @@ export class ActivityTrackerGroup {
     'Dec 18 #': number;
     'Nov 18 $': number;
     'Nov 18 #': number;
-    'Oct 18 $': number;
-    'Oct 18 #': number;
-    'Sep 18 $': number;
-    'Sep 18 #': number;
-    'Aug 18 $': number;
-    'Aug 18 #': number;
-    'Jul 18 $': number;
-    'Jul 18 #': number;
-    'Jun 18 $': number;
-    'Jun 18 #': number;
-    'May 18 $': number;
-    'May 18 #': number;
+    // 'Oct 18 $': number;
+    // 'Oct 18 #': number;
+    // 'Sep 18 $': number;
+    // 'Sep 18 #': number;
+    // 'Aug 18 $': number;
+    // 'Aug 18 #': number;
+    // 'Jul 18 $': number;
+    // 'Jul 18 #': number;
+    // 'Jun 18 $': number;
+    // 'Jun 18 #': number;
+    // 'May 18 $': number;
+    // 'May 18 #': number;
     details: ActivityTrackerUser[];
 }
 
@@ -71,17 +71,17 @@ export class ActivityTrackerStatus {
     'Dec 18 #': number;
     'Nov 18 $': number;
     'Nov 18 #': number;
-    'Oct 18 $': number;
-    'Oct 18 #': number;
-    'Sep 18 $': number;
-    'Sep 18 #': number;
-    'Aug 18 $': number;
-    'Aug 18 #': number;
-    'Jul 18 $': number;
-    'Jul 18 #': number;
-    'Jun 18 $': number;
-    'Jun 18 #': number;
-    'May 18 $': number;
-    'May 18 #': number;
+    // 'Oct 18 $': number;
+    // 'Oct 18 #': number;
+    // 'Sep 18 $': number;
+    // 'Sep 18 #': number;
+    // 'Aug 18 $': number;
+    // 'Aug 18 #': number;
+    // 'Jul 18 $': number;
+    // 'Jul 18 #': number;
+    // 'Jun 18 $': number;
+    // 'Jun 18 #': number;
+    // 'May 18 $': number;
+    // 'May 18 #': number;
     details: ActivityTrackerGroup[];
 }
