@@ -120,7 +120,7 @@ export class NgxDataTableComponent implements OnInit, AfterViewInit {
 
   filteredData: any[];
   isLoading = true;
-  rowLoadMillSecond = 10;
+  rowLoadMillSecond = 20;
   totalCount;
   totalCountObservable = new BehaviorSubject<number>(0);
 
@@ -321,7 +321,8 @@ export class NgxDataTableComponent implements OnInit, AfterViewInit {
  }
 
   private calculateSpinningWaitingTime( totalCount: number ) {
-    return totalCount * this.rowLoadMillSecond - 3000;
+    return Math.max( totalCount * this.rowLoadMillSecond - 3000, 5000);
+
   }
 
   private stopLoadingSpin(totalCount: number ) {

@@ -131,6 +131,10 @@ export class AppComponent {
       return this.getDisplayNameSla(columnName);
     }
 
+    if ( ! columnName ) {
+      return columnName;
+    }
+
     if ( columnName.toLowerCase().indexOf('one') > 0 ) {
       return '<2';
     }
@@ -147,38 +151,36 @@ export class AppComponent {
       return '5+';
     }
 
+    if ( columnName.indexOf('Count') > 0 ) {
+      return '#';
+    }
+
+    if (columnName.indexOf('Amount') > 0 ) {
+      const re = /([A-Za-z]?)([a-z]+)/g, output = [];
+      let match;
+      match = re.exec(columnName);
+      while (match) {
+        output.push([match[1].toUpperCase(), match[2]].join(''));
+        match = re.exec(columnName);
+      }
+      if ( output[ output.length - 1 ].toLowerCase() === 'amount') {
+        output[ output.length - 1 ] = '$';
+      }
+      return output.join(' ');
+    }
+
      return columnName;
 
   }
 
-  getColumnStyleSla(columnName: string): object {
-
-    if ( columnName.toLowerCase().indexOf('one') > 0 ) {
-      return { 'background-color': 'yellow' };
-    }
-
-    if ( columnName.toLowerCase().indexOf('two') > 0 ) {
-      return { 'background-color': 'orange' };
-    }
-
-    if ( columnName.toLowerCase().indexOf('three') > 0 ) {
-      return { 'background-color': 'orange' };
-    }
-
-    if ( columnName.toLowerCase().indexOf('four') > 0 ) {
-      return { 'background-color': 'red' };
-    }
-
-    return {'background-color': 'white'};
-  }
 
   getColumnStyle(columnName: string) {
     if ( this.tabelType === TableTypeEnum.originationPipeline || this.tabelType === TableTypeEnum.activityTracker ) {
-      return {'background-color': 'white'};
+      return {'background-color': 'lightblue'};
     }
 
     if ( ! columnName ) {
-      return {'background-color': 'white'};
+      return {'background-color': 'lightblue'};
     }
 
     if ( columnName.toLowerCase().indexOf('one') > 0 ) {
@@ -199,7 +201,7 @@ export class AppComponent {
       return { 'background-color': 'red' };
     }
 
-    return {'background-color': 'white'};
+    return {'background-color': 'lightblue'};
 
   }
 
@@ -269,7 +271,7 @@ export class AppComponent {
         details: [],
         };
 
-        const randomSize = 10 + faker.random.number() % 10;
+        const randomSize = 4;
 
         for ( let u = 0 ; u < randomSize; u++ ) {
           const activityUser: ActivityTrackerUser = {

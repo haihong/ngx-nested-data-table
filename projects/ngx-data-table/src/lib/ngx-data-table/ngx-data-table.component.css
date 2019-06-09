@@ -4,7 +4,7 @@
 .detail-table mat-cell:first-of-type {padding-left:5px; justify-content: left;}
 .middle-table mat-header-row {display:flex; background-color: white;}
 .middle-table mat-table {background-color: lightgoldenrodyellow;}
-.mat-column-expandedDetail {padding-left:0px; padding-right:0px;} 
+.mat-column-expandedDetail {padding-left:0px!important; padding-right:0px!important;} 
 .expand-icon {color: rgba(0,0,0,.44);font-size: 12px; margin-right: 5px; cursor: pointer;}
 .col-value:first-child span{margin-left: 15px;}
 .mat-form-field {padding: 10px 10px 0 10px;width: calc(100% - 20px); background-color: white;}
